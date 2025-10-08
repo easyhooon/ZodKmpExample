@@ -27,7 +27,7 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize(),
                         snackbarHost = { SnackbarHost(snackbarHostState) }
                     ) { innerPadding ->
-                        HelloFormScreen(innerPadding = innerPadding)
+                        FormScreen(innerPadding = innerPadding)
                     }
                 }
             }
