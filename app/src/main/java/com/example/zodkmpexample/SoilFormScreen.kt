@@ -226,6 +226,7 @@ private fun Form<FormData>.MobileNumber(
         updater = { copy(mobileNumber = it) },
         validator = FieldValidator {
             notBlank { "must be not blank" }
+            phoneNumber { "must be valid phone number" }
         },
         render = content
     )
@@ -262,5 +263,11 @@ private fun Form<FormData>.Developer(
 // Basic custom validation rule for email addresses
 private fun StringRuleBuilder.email(message: () -> String) {
     val pattern = Regex("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}\$")
+    extend(StringRule({ pattern.matches(this) }, message))
+}
+
+// Basic custom validation rule for phone numbers
+private fun StringRuleBuilder.phoneNumber(message: () -> String) {
+    val pattern = Regex("^01[0-9]-?[0-9]{3,4}-?[0-9]{4}$")
     extend(StringRule({ pattern.matches(this) }, message))
 }
