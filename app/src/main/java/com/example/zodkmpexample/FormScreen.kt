@@ -46,6 +46,7 @@ fun FormScreen(innerPadding: PaddingValues) {
     var formData by remember { mutableStateOf(FormData()) }
     var errors by remember { mutableStateOf<Map<String, String>>(emptyMap()) }
     var touchedFields by remember { mutableStateOf<Set<String>>(emptySet()) }
+    var focusedFields by remember { mutableStateOf<Set<String>>(emptySet()) }
 
     val firstNameSchema = remember { Zod.string().min(1, "must be not blank") }
     val lastNameSchema = remember { Zod.string().min(1, "must be not blank") }
@@ -120,17 +121,16 @@ fun FormScreen(innerPadding: PaddingValues) {
         },
         onFieldFocusChanged = { fieldName, isFocused ->
             if (isFocused) {
+                // Track that this field has been focused
+                focusedFields = focusedFields + fieldName
+            } else if (focusedFields.contains(fieldName)) {
+                // Only validate if field was previously focused (not initial state)
                 touchedFields = touchedFields + fieldName
-            } else {
-                if (touchedFields.contains(fieldName)) {
-                    validateField(fieldName)
-                }
+                validateField(fieldName)
             }
         },
         onFieldValueChanged = { fieldName ->
-            if (touchedFields.contains(fieldName)) {
-                validateField(fieldName)
-            }
+            // Don't validate on value change, only on focus loss
         },
         onSubmit = {
             // Mark all fields as touched
